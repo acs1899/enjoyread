@@ -5,6 +5,9 @@
 
     module.exports = function(app) {
         fs.readdirSync(__dirname + '/../controllers').forEach(function(name){
+            if (!name.match(/\.js$/)) {
+                return;
+            }
             var controller = require(__dirname + '/../controllers/' + name);
             if (controller['before']) {
                 app.use(controller['before']);
