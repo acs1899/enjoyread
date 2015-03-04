@@ -17,12 +17,19 @@
             config = config[which];
         }
         var connection = _lastConnection = mysql.createConnection(config);
+        //catch err
+        _lastConnection.connect(function(err){
+            err && console.log(err)
+        });
         return connection;
     }
 
     module.exports.runSql = function(sql, param, conn) {
         var conn = conn || _lastConnection || connect(_mysqlConfigFile, _which);
         var sql = sqlFilter(sql, param, conn);
+        conn.query(sql, function(err,rows,fields) {
+            console.log(err,rows,fields)
+        });
         return new Promise(function(resolve, reject){
             conn.query(sql, function(err, result) {
                 if (err) {

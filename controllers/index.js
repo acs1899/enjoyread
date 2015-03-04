@@ -65,8 +65,8 @@
         emailexists: function(req, res) {
             var email = req.body.email;
             emailAlreadExists(email).then(
-                function() {res.end(lib.genAjaxRet(0))}, 
-                function() {res.end(lib.genAjaxRet(10001, lib.s('EMAIL_EXISTS')))});
+                function(res) {res.end(lib.genAjaxRet(0))},
+                function(res) {res.end(lib.genAjaxRet(10001, lib.s('EMAIL_EXISTS')))});
         },
 
         quickstart: function(req, res) {
