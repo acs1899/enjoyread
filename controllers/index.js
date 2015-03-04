@@ -120,13 +120,13 @@
             }
 
             var sql = 'into user(email, password) value (?, ?)';
-            emailAlreadExists(email).then(function() {
+            emailAlreadExists(email).then(function(res) {
                 addUser(email, password)
                     .then(function(id) {
                         res.send(res.send(lib.genAjaxRet(0, 'success', id)));
                         clearup();
                     });
-            }, function() {
+            }, function(res) {
                 var msg = lib.s('EMAIL_EXISTS');
                 var ret = lib.genAjaxRet(10001, msg);
                 res.send(ret);
@@ -158,9 +158,9 @@
             var sql = 'select email from user where email = ?';
             mysql.runSql(sql, [email]).then(function(result) {
                 if (result.length !== 0) {
-                    reject();
+                    reject(result);
                 } else {
-                    resolve();
+                    resolve(result);
                 }
             });
         });
