@@ -11,6 +11,7 @@
             msg: msg || 'success',
             data: data || null,
         };
+        console.log(result)
         return JSON.stringify(result);
     }
 

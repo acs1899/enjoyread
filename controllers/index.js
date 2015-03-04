@@ -68,8 +68,12 @@
         emailexists: function(req, res) {
             var email = req.body.email;
             emailAlreadExists(email).then(
-                function(res) {res.end(lib.genAjaxRet(0))},
-                function(res) {res.end(lib.genAjaxRet(10001, lib.s('EMAIL_EXISTS')))});
+                function(result) {
+                    res.send(lib.genAjaxRet(0));
+                },
+                function(reason) {
+                    res.send(lib.genAjaxRet(10001, lib.s('EMAIL_EXISTS')))
+                });
         },
 
         quickstart: function(req, res) {
@@ -123,13 +127,13 @@
             }
 
             var sql = 'into user(email, password) value (?, ?)';
-            emailAlreadExists(email).then(function(res) {
+            emailAlreadExists(email).then(function(result) {
                 addUser(email, password)
                     .then(function(id) {
-                        res.send(res.send(lib.genAjaxRet(0, 'success', id)));
+                        res.send(lib.genAjaxRet(0, 'success', id));
                         clearup();
                     });
-            }, function(res) {
+            }, function(reason) {
                 var msg = lib.s('EMAIL_EXISTS');
                 var ret = lib.genAjaxRet(10001, msg);
                 res.send(ret);
@@ -160,11 +164,13 @@
         return new Promise(function(resolve, reject) {
             var sql = 'select email from user where email = ?';
             mysql.runSql(sql, [email]).then(function(result) {
-                if (result.length !== 0) {
-                    reject(result);
-                } else {
+                if (result.length === 0) {
                     resolve(result);
+                } else {
+                    reject(result);
                 }
+            },function(res){
+                lib.genAjaxRet(500, lib.s('ERROR'));
             });
         });
     }
